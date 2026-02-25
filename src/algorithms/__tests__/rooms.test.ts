@@ -6,32 +6,18 @@
 import { describe, it, expect } from "vitest";
 import { assignRoomTypes } from "../rooms";
 import { generateMaze } from "../maze";
-import { type MazeConfig, RoomType, totalCells, wallKey, cellIndex } from "../types";
+import { type MazeConfig, RoomType, getCellNeighbors, totalCells, wallKey } from "../types";
 
 /** BFS distance from startCell through removedWalls. */
 function bfsDistances(config: MazeConfig, removedWalls: Set<string>, startCell: number): Map<number, number> {
   const distances = new Map<number, number>([[startCell, 0]]);
   const queue = [startCell];
   let head = 0;
-  const { rows, cols, levels } = config;
 
   while (head < queue.length) {
     const cell = queue[head++];
     const dist = distances.get(cell)!;
-    const level = Math.floor(cell / (rows * cols));
-    const local = cell % (rows * cols);
-    const row = Math.floor(local / cols);
-    const col = local % cols;
-
-    const neighbors: number[] = [];
-    if (row > 0) neighbors.push(cellIndex(config, level, row - 1, col));
-    if (row < rows - 1) neighbors.push(cellIndex(config, level, row + 1, col));
-    if (col > 0) neighbors.push(cellIndex(config, level, row, col - 1));
-    if (col < cols - 1) neighbors.push(cellIndex(config, level, row, col + 1));
-    if (level > 0) neighbors.push(cellIndex(config, level - 1, row, col));
-    if (level < levels - 1) neighbors.push(cellIndex(config, level + 1, row, col));
-
-    for (const neighbor of neighbors) {
+    for (const neighbor of getCellNeighbors(config, cell)) {
       if (!distances.has(neighbor) && removedWalls.has(wallKey(cell, neighbor))) {
         distances.set(neighbor, dist + 1);
         queue.push(neighbor);
@@ -129,7 +115,7 @@ describe("assignRoomTypes", () => {
     expect(types.size).toBe(4);
     expect(types.get(0)).toBe(RoomType.Safe);
     // With only 4 cells, Boss should exist somewhere
-    const hassBoss = [...types.values()].includes(RoomType.Boss);
-    expect(hassBoss).toBe(true);
+    const hasBoss = [...types.values()].includes(RoomType.Boss);
+    expect(hasBoss).toBe(true);
   });
 });

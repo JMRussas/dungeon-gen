@@ -3,9 +3,10 @@
 // SVG renderer for a single maze level. Draws cell backgrounds
 // colored by room type and walls as lines.
 //
-// Depends on: algorithms/types.ts, hooks/useMazeLayout.ts
+// Depends on: hooks/useMazeLayout.ts
 // Used by:    App.tsx
 
+import { Fragment } from "react";
 import { useMazeLayout } from "../hooks/useMazeLayout";
 import type { MazeResult } from "../algorithms/types";
 
@@ -49,10 +50,9 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
 
       {/* Walls */}
       {cells.map((c) => (
-        <>
+        <Fragment key={`walls-${c.index}`}>
           {c.wallSouth && (
             <line
-              key={`wall-s-${c.index}`}
               x1={c.x}
               y1={c.y + cellSize}
               x2={c.x + cellSize}
@@ -64,7 +64,6 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
           )}
           {c.wallEast && (
             <line
-              key={`wall-e-${c.index}`}
               x1={c.x + cellSize}
               y1={c.y}
               x2={c.x + cellSize}
@@ -74,7 +73,7 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
               strokeLinecap="round"
             />
           )}
-        </>
+        </Fragment>
       ))}
 
       {/* Labels */}
@@ -95,10 +94,9 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
 
       {/* Stair indicators */}
       {cells.map((c) => (
-        <>
+        <Fragment key={`stairs-${c.index}`}>
           {c.stairUp && (
             <text
-              key={`stair-up-${c.index}`}
               x={c.x + cellSize / 2}
               y={c.y + cellSize / 2 + 12}
               textAnchor="middle"
@@ -111,7 +109,6 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
           )}
           {c.stairDown && (
             <text
-              key={`stair-down-${c.index}`}
               x={c.x + cellSize / 2}
               y={c.y + cellSize / 2 + (c.stairUp ? 22 : 12)}
               textAnchor="middle"
@@ -122,7 +119,7 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
               ↓
             </text>
           )}
-        </>
+        </Fragment>
       ))}
     </svg>
   );

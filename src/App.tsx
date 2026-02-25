@@ -24,19 +24,11 @@ function buildMaze(config: MazeConfig): MazeResult {
 }
 
 export default function App() {
-  const [config, setConfig] = useState<MazeConfig>(DEFAULT_CONFIG);
   const [maze, setMaze] = useState<MazeResult>(() => buildMaze(DEFAULT_CONFIG));
   const [activeLevel, setActiveLevel] = useState(0);
 
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback((config: MazeConfig) => {
     setMaze(buildMaze(config));
-    setActiveLevel(0);
-  }, [config]);
-
-  const handleConfigChange = useCallback((newConfig: MazeConfig) => {
-    setConfig(newConfig);
-    const newMaze = buildMaze(newConfig);
-    setMaze(newMaze);
     setActiveLevel(0);
   }, []);
 
@@ -66,8 +58,7 @@ export default function App() {
           {/* Sidebar: controls */}
           <div className="w-full md:w-56 shrink-0">
             <Controls
-              config={config}
-              onChange={handleConfigChange}
+              config={maze.config}
               onGenerate={handleGenerate}
             />
           </div>
@@ -75,7 +66,7 @@ export default function App() {
           {/* Maze area */}
           <div className="flex-1 flex flex-col gap-4 items-center">
             <LevelSelector
-              levels={config.levels}
+              levels={maze.config.levels}
               activeLevel={activeLevel}
               onSelect={setActiveLevel}
             />

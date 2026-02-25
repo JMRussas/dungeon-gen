@@ -10,8 +10,7 @@
 import { useMemo } from "react";
 import {
   type MazeResult,
-  type RoomType,
-  RoomType as RT,
+  RoomType,
   ROOM_COLORS,
   cellIndex,
   wallKey,
@@ -54,7 +53,7 @@ export function useMazeLayout(maze: MazeResult, activeLevel: number): MazeLayout
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
         const cell = cellIndex(config, activeLevel, row, col);
-        const roomType = cellTypes.get(cell) ?? RT.Combat;
+        const roomType = cellTypes.get(cell) ?? RoomType.Combat;
         const x = PADDING + col * CELL_SIZE;
         const y = PADDING + row * CELL_SIZE;
 

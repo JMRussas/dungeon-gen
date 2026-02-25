@@ -1,6 +1,6 @@
 {
   "name": "dungeon-gen",
-  "private": true,
+  "description": "Interactive browser-based dungeon generator using Kruskal's maze algorithm",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

@@ -65,6 +65,23 @@ export function totalCells(config: MazeConfig): number {
   return config.rows * config.cols * config.levels;
 }
 
+/** Returns indices of all cells adjacent to the given cell (N/S/E/W/Up/Down). */
+export function getCellNeighbors(config: MazeConfig, index: number): number[] {
+  const neighbors: number[] = [];
+  const level = cellLevel(config, index);
+  const row = cellRow(config, index);
+  const col = cellCol(config, index);
+
+  if (row > 0) neighbors.push(cellIndex(config, level, row - 1, col));
+  if (row < config.rows - 1) neighbors.push(cellIndex(config, level, row + 1, col));
+  if (col > 0) neighbors.push(cellIndex(config, level, row, col - 1));
+  if (col < config.cols - 1) neighbors.push(cellIndex(config, level, row, col + 1));
+  if (level > 0) neighbors.push(cellIndex(config, level - 1, row, col));
+  if (level < config.levels - 1) neighbors.push(cellIndex(config, level + 1, row, col));
+
+  return neighbors;
+}
+
 /** Fisher-Yates shuffle (in-place). */
 export function shuffle<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {

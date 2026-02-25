@@ -10,37 +10,11 @@
 import {
   type MazeConfig,
   RoomType,
-  cellIndex,
-  cellLevel,
-  cellRow,
-  cellCol,
+  getCellNeighbors,
   totalCells,
   wallKey,
   shuffle,
 } from "./types";
-
-/** Returns indices of all cells adjacent to the given cell (N/S/E/W/Up/Down). */
-function getCellNeighbors(config: MazeConfig, index: number): number[] {
-  const neighbors: number[] = [];
-  const level = cellLevel(config, index);
-  const row = cellRow(config, index);
-  const col = cellCol(config, index);
-
-  // North
-  if (row > 0) neighbors.push(cellIndex(config, level, row - 1, col));
-  // South
-  if (row < config.rows - 1) neighbors.push(cellIndex(config, level, row + 1, col));
-  // West
-  if (col > 0) neighbors.push(cellIndex(config, level, row, col - 1));
-  // East
-  if (col < config.cols - 1) neighbors.push(cellIndex(config, level, row, col + 1));
-  // Below
-  if (level > 0) neighbors.push(cellIndex(config, level - 1, row, col));
-  // Above
-  if (level < config.levels - 1) neighbors.push(cellIndex(config, level + 1, row, col));
-
-  return neighbors;
-}
 
 /**
  * Assign room types to all cells via BFS from cell 0.

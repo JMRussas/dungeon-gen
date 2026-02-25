@@ -5,31 +5,17 @@
 
 import { describe, it, expect } from "vitest";
 import { generateMaze } from "../maze";
-import { type MazeConfig, cellIndex, totalCells, wallKey } from "../types";
+import { type MazeConfig, getCellNeighbors, totalCells, wallKey } from "../types";
 
 /** BFS reachability: returns the set of cells reachable from startCell. */
 function reachableCells(config: MazeConfig, removedWalls: Set<string>, startCell: number): Set<number> {
   const visited = new Set<number>([startCell]);
   const queue = [startCell];
   let head = 0;
-  const { rows, cols, levels } = config;
 
   while (head < queue.length) {
     const cell = queue[head++];
-    const level = Math.floor(cell / (rows * cols));
-    const local = cell % (rows * cols);
-    const row = Math.floor(local / cols);
-    const col = local % cols;
-
-    const neighbors: number[] = [];
-    if (row > 0) neighbors.push(cellIndex(config, level, row - 1, col));
-    if (row < rows - 1) neighbors.push(cellIndex(config, level, row + 1, col));
-    if (col > 0) neighbors.push(cellIndex(config, level, row, col - 1));
-    if (col < cols - 1) neighbors.push(cellIndex(config, level, row, col + 1));
-    if (level > 0) neighbors.push(cellIndex(config, level - 1, row, col));
-    if (level < levels - 1) neighbors.push(cellIndex(config, level + 1, row, col));
-
-    for (const neighbor of neighbors) {
+    for (const neighbor of getCellNeighbors(config, cell)) {
       if (!visited.has(neighbor) && removedWalls.has(wallKey(cell, neighbor))) {
         visited.add(neighbor);
         queue.push(neighbor);

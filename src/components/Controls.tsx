@@ -1,16 +1,17 @@
 // dungeon-gen - Controls Component
 //
 // Sliders for grid dimensions and a regenerate button.
+// Sliders update local state only — maze regenerates on Generate click.
 //
 // Depends on: algorithms/types.ts
 // Used by:    App.tsx
 
+import { useState } from "react";
 import type { MazeConfig } from "../algorithms/types";
 
 interface ControlsProps {
   config: MazeConfig;
-  onChange: (config: MazeConfig) => void;
-  onGenerate: () => void;
+  onGenerate: (config: MazeConfig) => void;
 }
 
 function Slider({
@@ -43,32 +44,34 @@ function Slider({
   );
 }
 
-export function Controls({ config, onChange, onGenerate }: ControlsProps) {
+export function Controls({ config, onGenerate }: ControlsProps) {
+  const [local, setLocal] = useState<MazeConfig>(config);
+
   return (
     <div className="flex flex-col gap-4">
       <Slider
         label="Rows"
-        value={config.rows}
+        value={local.rows}
         min={2}
         max={8}
-        onChange={(rows) => onChange({ ...config, rows })}
+        onChange={(rows) => setLocal((c) => ({ ...c, rows }))}
       />
       <Slider
         label="Columns"
-        value={config.cols}
+        value={local.cols}
         min={2}
         max={8}
-        onChange={(cols) => onChange({ ...config, cols })}
+        onChange={(cols) => setLocal((c) => ({ ...c, cols }))}
       />
       <Slider
         label="Levels"
-        value={config.levels}
+        value={local.levels}
         min={1}
         max={5}
-        onChange={(levels) => onChange({ ...config, levels })}
+        onChange={(levels) => setLocal((c) => ({ ...c, levels }))}
       />
       <button
-        onClick={onGenerate}
+        onClick={() => onGenerate(local)}
         className="mt-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition-colors cursor-pointer"
       >
         Generate
