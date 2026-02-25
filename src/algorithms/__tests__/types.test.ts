@@ -42,7 +42,8 @@ describe("wallKey", () => {
     expect(wallKey(3, 5)).toBe("3-5");
   });
 
-  it("equal cells produce valid key", () => {
-    expect(wallKey(7, 7)).toBe("7-7");
+  it("handles adjacent large indices", () => {
+    expect(wallKey(99, 100)).toBe("99-100");
+    expect(wallKey(100, 99)).toBe("99-100");
   });
 });
