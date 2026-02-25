@@ -14,6 +14,7 @@ import {
   totalCells,
   wallKey,
   shuffle,
+  validateConfig,
 } from "./types";
 
 /**
@@ -24,6 +25,7 @@ export function assignRoomTypes(
   config: MazeConfig,
   removedWalls: Set<string>,
 ): Map<number, RoomType> {
+  validateConfig(config);
   const numCells = totalCells(config);
   const startCell = 0;
 
@@ -74,11 +76,11 @@ export function assignRoomTypes(
       eligible.push(i);
     }
   }
-  shuffle(eligible);
+  const shuffled = shuffle(eligible);
 
   const specialRooms = [RoomType.Shop, RoomType.Loot, RoomType.Forge];
-  for (let s = 0; s < specialRooms.length && s < eligible.length; s++) {
-    cellTypes.set(eligible[s], specialRooms[s]);
+  for (let s = 0; s < specialRooms.length && s < shuffled.length; s++) {
+    cellTypes.set(shuffled[s], specialRooms[s]);
   }
 
   return cellTypes;

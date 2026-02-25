@@ -25,9 +25,9 @@ export interface MazeConfig {
 export interface MazeResult {
   config: MazeConfig;
   /** Set of wall keys ("cellA-cellB") that were removed (passages). */
-  removedWalls: Set<string>;
+  removedWalls: ReadonlySet<string>;
   /** Room type assigned to each cell index. */
-  cellTypes: Map<number, RoomType>;
+  cellTypes: ReadonlyMap<number, RoomType>;
 }
 
 /** Room type display info: label and color. */
@@ -39,6 +39,18 @@ export const ROOM_COLORS: Record<RoomType, string> = {
   [RoomType.Boss]: "#a855f7",
   [RoomType.Forge]: "#f97316",
 };
+
+// --- Config validation ---
+
+export function validateConfig(config: MazeConfig): void {
+  const { rows, cols, levels } = config;
+  if (rows < 1 || cols < 1 || levels < 1) {
+    throw new Error(`Invalid maze config: dimensions must be >= 1 (got ${rows}x${cols}x${levels})`);
+  }
+  if (!Number.isInteger(rows) || !Number.isInteger(cols) || !Number.isInteger(levels)) {
+    throw new Error(`Invalid maze config: dimensions must be integers (got ${rows}x${cols}x${levels})`);
+  }
+}
 
 // --- Grid index helpers ---
 // Cell index = level * (rows * cols) + row * cols + col
@@ -65,31 +77,47 @@ export function totalCells(config: MazeConfig): number {
   return config.rows * config.cols * config.levels;
 }
 
-/** Returns indices of all cells adjacent to the given cell (N/S/E/W/Up/Down). */
+/**
+ * Returns indices of all cells adjacent to the given cell.
+ * Order: [North, South, West, East, Up, Down] (only present neighbors included).
+ */
 export function getCellNeighbors(config: MazeConfig, index: number): number[] {
   const neighbors: number[] = [];
   const level = cellLevel(config, index);
   const row = cellRow(config, index);
   const col = cellCol(config, index);
 
-  if (row > 0) neighbors.push(cellIndex(config, level, row - 1, col));
-  if (row < config.rows - 1) neighbors.push(cellIndex(config, level, row + 1, col));
-  if (col > 0) neighbors.push(cellIndex(config, level, row, col - 1));
-  if (col < config.cols - 1) neighbors.push(cellIndex(config, level, row, col + 1));
-  if (level > 0) neighbors.push(cellIndex(config, level - 1, row, col));
-  if (level < config.levels - 1) neighbors.push(cellIndex(config, level + 1, row, col));
+  if (row > 0) neighbors.push(cellIndex(config, level, row - 1, col));          // North
+  if (row < config.rows - 1) neighbors.push(cellIndex(config, level, row + 1, col)); // South
+  if (col > 0) neighbors.push(cellIndex(config, level, row, col - 1));          // West
+  if (col < config.cols - 1) neighbors.push(cellIndex(config, level, row, col + 1)); // East
+  if (level > 0) neighbors.push(cellIndex(config, level - 1, row, col));        // Up
+  if (level < config.levels - 1) neighbors.push(cellIndex(config, level + 1, row, col)); // Down
 
   return neighbors;
 }
 
-/** Fisher-Yates shuffle (in-place). */
-export function shuffle<T>(array: T[]): T[] {
-  for (let i = array.length - 1; i > 0; i--) {
+/** Fisher-Yates shuffle. Returns a new shuffled array (does not mutate input). */
+export function shuffle<T>(array: readonly T[]): T[] {
+  const result = array.slice();
+  for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [result[i], result[j]] = [result[j], result[i]];
   }
-  return array;
+  return result;
 }
+
+// --- SVG rendering constants ---
+
+export const SVG = {
+  CELL_SIZE: 64,
+  PADDING: 2,
+  WALL_COLOR: "#e2e8f0",
+  WALL_WIDTH: 3,
+  CELL_OPACITY: 0.3,
+  LABEL_SIZE: 11,
+  STAIR_SIZE: 12,
+} as const;
 
 /** Wall key: always stores lower index first for consistency. */
 export function wallKey(cellA: number, cellB: number): string {

@@ -25,8 +25,8 @@ npm run test:watch    # Watch mode
 | `src/components/Controls.tsx` | Grid size sliders + generate button | types.ts | App.tsx |
 | `src/components/Legend.tsx` | Room type color legend | types.ts | App.tsx |
 | `src/App.tsx` | Root component, wires everything together | all above | main.tsx |
-| `src/algorithms/__tests__/*.test.ts` | Algorithm tests (38 tests) | types, maze, rooms | CI, manual |
-| `src/components/__tests__/*.test.tsx` | Component smoke tests (3 tests) | Legend, App | CI, manual |
+| `src/algorithms/__tests__/*.test.ts` | Algorithm tests (43 tests) | types, maze, rooms | CI, manual |
+| `src/components/__tests__/*.test.tsx` | Component + integration tests (13 tests) | Controls, Legend, LevelSelector, MazeGrid, App | CI, manual |
 
 ## Conventions
 

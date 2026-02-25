@@ -12,12 +12,12 @@ import {
   type MazeResult,
   RoomType,
   ROOM_COLORS,
+  SVG,
   cellIndex,
   wallKey,
 } from "../algorithms/types";
 
-const CELL_SIZE = 64;
-const PADDING = 2;
+const { CELL_SIZE, PADDING } = SVG;
 
 export interface CellLayout {
   index: number;

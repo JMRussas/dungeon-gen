@@ -8,6 +8,7 @@
 
 import { Fragment } from "react";
 import { useMazeLayout } from "../hooks/useMazeLayout";
+import { SVG } from "../algorithms/types";
 import type { MazeResult } from "../algorithms/types";
 
 interface MazeGridProps {
@@ -23,6 +24,8 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
       viewBox={`0 0 ${width} ${height}`}
       className="w-full max-w-[600px] mx-auto"
       style={{ aspectRatio: `${width} / ${height}` }}
+      role="img"
+      aria-label={`Maze level ${activeLevel + 1} of ${maze.config.levels}`}
     >
       {/* Outer border */}
       <rect
@@ -31,8 +34,8 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
         width={width - padding * 2}
         height={height - padding * 2}
         fill="none"
-        stroke="#e2e8f0"
-        strokeWidth={3}
+        stroke={SVG.WALL_COLOR}
+        strokeWidth={SVG.WALL_WIDTH}
       />
 
       {/* Cell backgrounds */}
@@ -44,7 +47,7 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
           width={cellSize}
           height={cellSize}
           fill={c.color}
-          opacity={0.3}
+          opacity={SVG.CELL_OPACITY}
         />
       ))}
 
@@ -57,8 +60,8 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
               y1={c.y + cellSize}
               x2={c.x + cellSize}
               y2={c.y + cellSize}
-              stroke="#e2e8f0"
-              strokeWidth={3}
+              stroke={SVG.WALL_COLOR}
+              strokeWidth={SVG.WALL_WIDTH}
               strokeLinecap="round"
             />
           )}
@@ -68,8 +71,8 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
               y1={c.y}
               x2={c.x + cellSize}
               y2={c.y + cellSize}
-              stroke="#e2e8f0"
-              strokeWidth={3}
+              stroke={SVG.WALL_COLOR}
+              strokeWidth={SVG.WALL_WIDTH}
               strokeLinecap="round"
             />
           )}
@@ -85,7 +88,7 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
           textAnchor="middle"
           dominantBaseline="central"
           fill={c.color}
-          fontSize="11"
+          fontSize={SVG.LABEL_SIZE}
           fontWeight="600"
         >
           {c.roomType}
@@ -98,11 +101,11 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
           {c.stairUp && (
             <text
               x={c.x + cellSize / 2}
-              y={c.y + cellSize / 2 + 12}
+              y={c.y + cellSize / 2 + SVG.STAIR_SIZE}
               textAnchor="middle"
               dominantBaseline="central"
-              fill="#e2e8f0"
-              fontSize="12"
+              fill={SVG.WALL_COLOR}
+              fontSize={SVG.STAIR_SIZE}
             >
               ↑
             </text>
@@ -110,11 +113,11 @@ export function MazeGrid({ maze, activeLevel }: MazeGridProps) {
           {c.stairDown && (
             <text
               x={c.x + cellSize / 2}
-              y={c.y + cellSize / 2 + (c.stairUp ? 22 : 12)}
+              y={c.y + cellSize / 2 + (c.stairUp ? SVG.STAIR_SIZE + 10 : SVG.STAIR_SIZE)}
               textAnchor="middle"
               dominantBaseline="central"
-              fill="#e2e8f0"
-              fontSize="12"
+              fill={SVG.WALL_COLOR}
+              fontSize={SVG.STAIR_SIZE}
             >
               ↓
             </text>

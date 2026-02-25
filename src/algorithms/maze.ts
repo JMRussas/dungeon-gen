@@ -6,7 +6,7 @@
 // Depends on: types.ts
 // Used by:    App.tsx (via generate function)
 
-import { type MazeConfig, cellIndex, totalCells, wallKey, shuffle } from "./types";
+import { type MazeConfig, cellIndex, totalCells, wallKey, shuffle, validateConfig } from "./types";
 
 // --- Union-Find with path compression + union by rank ---
 
@@ -81,6 +81,7 @@ function buildAllWalls(config: MazeConfig): Array<[number, number]> {
  * Returns the set of wall keys that were removed (passages).
  */
 export function generateMaze(config: MazeConfig): Set<string> {
+  validateConfig(config);
   const numCells = totalCells(config);
   const uf = new UnionFind(numCells);
   const allWalls = shuffle(buildAllWalls(config));

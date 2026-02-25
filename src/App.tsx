@@ -26,10 +26,16 @@ function buildMaze(config: MazeConfig): MazeResult {
 export default function App() {
   const [maze, setMaze] = useState<MazeResult>(() => buildMaze(DEFAULT_CONFIG));
   const [activeLevel, setActiveLevel] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = useCallback((config: MazeConfig) => {
-    setMaze(buildMaze(config));
-    setActiveLevel(0);
+    try {
+      setMaze(buildMaze(config));
+      setActiveLevel(0);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Maze generation failed");
+    }
   }, []);
 
   return (
@@ -65,6 +71,9 @@ export default function App() {
 
           {/* Maze area */}
           <div className="flex-1 flex flex-col gap-4 items-center">
+            {error && (
+              <p className="text-red-400 text-sm">{error}</p>
+            )}
             <LevelSelector
               levels={maze.config.levels}
               activeLevel={activeLevel}
