@@ -4,7 +4,9 @@
 
 Ported from a [Verse](https://dev.epicgames.com/documentation/en-us/uefn/verse-language-reference) dungeon crawler built in Unreal Editor for Fortnite (UEFN). The original game procedurally generates 3D dungeon layouts using barrier devices — this project extracts the core algorithms into a visual web tool.
 
-![React](https://img.shields.io/badge/React-18-61dafb) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6) ![Tailwind](https://img.shields.io/badge/Tailwind-4-38bdf8)
+![React](https://img.shields.io/badge/React-19-61dafb) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6) ![Tailwind](https://img.shields.io/badge/Tailwind-4-38bdf8)
+
+**[Live Demo](https://jmrussas.github.io/dungeon-gen/)**
 
 ## Features
 
@@ -44,7 +46,7 @@ After the maze structure is built, a **BFS traversal** from the starting cell (0
 
 - **Cell 0** → Safe (starting room)
 - **Farthest cell** from start → Boss
-- **Mid-distance cells** → Shop, Loot, Forge (first eligible cells at intermediate distances)
+- **Mid-distance cells** → Shop, Loot, Forge (randomly selected from eligible cells at intermediate distances)
 - **Everything else** → Combat
 
 ### Original Verse Code
@@ -56,9 +58,12 @@ The algorithms are ported from `maze_manager.verse`, which runs inside UEFN to c
 ```
 src/
 ├── algorithms/
-│   ├── types.ts     Grid helpers, room types, shared interfaces
-│   ├── maze.ts      Kruskal's algorithm + Union-Find
-│   └── rooms.ts     BFS room type assignment
+│   ├── types.ts          Grid helpers, room types, shared interfaces
+│   ├── maze.ts           Kruskal's algorithm + Union-Find
+│   ├── rooms.ts          BFS room type assignment
+│   └── __tests__/        Vitest test suite
+├── hooks/
+│   └── useMazeLayout.ts  Computes cell positions, walls, stairs for rendering
 └── components/
     ├── MazeGrid.tsx      SVG maze renderer
     ├── LevelSelector.tsx Level tab buttons
@@ -68,7 +73,7 @@ src/
 
 ## Tech Stack
 
-React 18 · TypeScript · Vite · Tailwind CSS v4
+React 19 · TypeScript · Vite · Tailwind CSS v4 · Vitest
 
 ## License
 

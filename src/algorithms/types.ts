@@ -65,6 +65,15 @@ export function totalCells(config: MazeConfig): number {
   return config.rows * config.cols * config.levels;
 }
 
+/** Fisher-Yates shuffle (in-place). */
+export function shuffle<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 /** Wall key: always stores lower index first for consistency. */
 export function wallKey(cellA: number, cellB: number): string {
   return cellA < cellB ? `${cellA}-${cellB}` : `${cellB}-${cellA}`;

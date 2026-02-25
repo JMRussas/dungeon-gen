@@ -16,6 +16,7 @@ import {
   cellCol,
   totalCells,
   wallKey,
+  shuffle,
 } from "./types";
 
 /** Returns indices of all cells adjacent to the given cell (N/S/E/W/Up/Down). */
@@ -56,11 +57,12 @@ export function assignRoomTypes(
   const distances = new Map<number, number>();
   distances.set(startCell, 0);
   const queue: number[] = [startCell];
+  let queueHead = 0;
   let farthestCell = 0;
   let farthestDist = 0;
 
-  while (queue.length > 0) {
-    const current = queue.shift()!;
+  while (queueHead < queue.length) {
+    const current = queue[queueHead++];
     const currentDist = distances.get(current)!;
 
     for (const neighbor of getCellNeighbors(config, current)) {
@@ -88,28 +90,21 @@ export function assignRoomTypes(
   cellTypes.set(startCell, RoomType.Safe);
   cellTypes.set(farthestCell, RoomType.Boss);
 
-  // Assign Shop, Loot, Forge to first eligible mid-distance cells
-  let shopAssigned = false;
-  let lootAssigned = false;
-  let forgeAssigned = false;
-
+  // Collect eligible cells (mid-distance, not start or boss) and shuffle
+  // to spread special rooms across the maze instead of clustering near start.
+  const eligible: number[] = [];
   for (let i = 0; i < numCells; i++) {
-    if (shopAssigned && lootAssigned && forgeAssigned) break;
     if (i === startCell || i === farthestCell) continue;
-
     const dist = distances.get(i);
     if (dist !== undefined && dist > 1 && dist < farthestDist) {
-      if (!shopAssigned) {
-        cellTypes.set(i, RoomType.Shop);
-        shopAssigned = true;
-      } else if (!lootAssigned) {
-        cellTypes.set(i, RoomType.Loot);
-        lootAssigned = true;
-      } else if (!forgeAssigned) {
-        cellTypes.set(i, RoomType.Forge);
-        forgeAssigned = true;
-      }
+      eligible.push(i);
     }
+  }
+  shuffle(eligible);
+
+  const specialRooms = [RoomType.Shop, RoomType.Loot, RoomType.Forge];
+  for (let s = 0; s < specialRooms.length && s < eligible.length; s++) {
+    cellTypes.set(eligible[s], specialRooms[s]);
   }
 
   return cellTypes;

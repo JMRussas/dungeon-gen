@@ -6,7 +6,7 @@
 // Depends on: algorithms/*, components/*
 // Used by:    main.tsx
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback } from "react";
 import type { MazeConfig, MazeResult } from "./algorithms/types";
 import { generateMaze } from "./algorithms/maze";
 import { assignRoomTypes } from "./algorithms/rooms";
@@ -25,20 +25,19 @@ function buildMaze(config: MazeConfig): MazeResult {
 
 export default function App() {
   const [config, setConfig] = useState<MazeConfig>(DEFAULT_CONFIG);
-  const [seed, setSeed] = useState(0); // bump to force regeneration
+  const [maze, setMaze] = useState<MazeResult>(() => buildMaze(DEFAULT_CONFIG));
   const [activeLevel, setActiveLevel] = useState(0);
 
-  const maze = useMemo(() => buildMaze(config), [config, seed]);
-
   const handleGenerate = useCallback(() => {
-    setSeed((s) => s + 1);
+    setMaze(buildMaze(config));
     setActiveLevel(0);
-  }, []);
+  }, [config]);
 
   const handleConfigChange = useCallback((newConfig: MazeConfig) => {
     setConfig(newConfig);
+    const newMaze = buildMaze(newConfig);
+    setMaze(newMaze);
     setActiveLevel(0);
-    setSeed((s) => s + 1);
   }, []);
 
   return (
