@@ -1,0 +1,71 @@
+// dungeon-gen - Algorithm Types
+//
+// Shared types for maze generation and room assignment.
+//
+// Depends on: (none)
+// Used by:    maze.ts, rooms.ts, all components
+
+export const RoomType = {
+  Safe: "Safe",
+  Combat: "Combat",
+  Loot: "Loot",
+  Shop: "Shop",
+  Boss: "Boss",
+  Forge: "Forge",
+} as const;
+
+export type RoomType = (typeof RoomType)[keyof typeof RoomType];
+
+export interface MazeConfig {
+  rows: number;
+  cols: number;
+  levels: number;
+}
+
+export interface MazeResult {
+  config: MazeConfig;
+  /** Set of wall keys ("cellA-cellB") that were removed (passages). */
+  removedWalls: Set<string>;
+  /** Room type assigned to each cell index. */
+  cellTypes: Map<number, RoomType>;
+}
+
+/** Room type display info: label and color. */
+export const ROOM_COLORS: Record<RoomType, string> = {
+  [RoomType.Safe]: "#22c55e",
+  [RoomType.Combat]: "#ef4444",
+  [RoomType.Loot]: "#eab308",
+  [RoomType.Shop]: "#3b82f6",
+  [RoomType.Boss]: "#a855f7",
+  [RoomType.Forge]: "#f97316",
+};
+
+// --- Grid index helpers ---
+// Cell index = level * (rows * cols) + row * cols + col
+
+export function cellIndex(config: MazeConfig, level: number, row: number, col: number): number {
+  return level * config.rows * config.cols + row * config.cols + col;
+}
+
+export function cellLevel(config: MazeConfig, index: number): number {
+  return Math.floor(index / (config.rows * config.cols));
+}
+
+export function cellRow(config: MazeConfig, index: number): number {
+  const local = index % (config.rows * config.cols);
+  return Math.floor(local / config.cols);
+}
+
+export function cellCol(config: MazeConfig, index: number): number {
+  const local = index % (config.rows * config.cols);
+  return local % config.cols;
+}
+
+export function totalCells(config: MazeConfig): number {
+  return config.rows * config.cols * config.levels;
+}
+
+/** Wall key: always stores lower index first for consistency. */
+export function wallKey(cellA: number, cellB: number): string {
+  return cellA < cellB ? `${cellA}-${cellB}` : `${cellB}-${cellA}`;
+}
