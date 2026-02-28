@@ -71,6 +71,12 @@ src/
     └── Legend.tsx         Room type color reference
 ```
 
+## Development
+
+Iterative development with structured code review after each stage. The commit history shows the progression: initial algorithm port, then dedicated review passes that hardened edge cases, expanded test coverage, fixed React patterns, and improved accessibility. 56 tests covering maze generation invariants, room assignment logic, and component rendering.
+
+See [commit history](https://github.com/JMRussas/dungeon-gen/commits/main) for the review-driven development trail.
+
 ## Tech Stack
 
 React 19 · TypeScript · Vite · Tailwind CSS v4 · Vitest
